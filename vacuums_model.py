@@ -1,4 +1,5 @@
 import mesa  # type: ignore
+import time
 
 
 
@@ -79,3 +80,26 @@ class VacuumsModel(mesa.Model):
     
     def percentage_cells_clean(self):
         return (self.total_clean_cells*100)/self.total_cells
+
+
+def test_simulation(M,N,num_agents,percentage_dirty_cells,max_execution_time):
+    model = VacuumsModel(M,N,num_agents,percentage_dirty_cells,max_execution_time)
+
+    start_time = time.time()
+    time_passed = 0.0
+
+    while (time_passed<=model.max_execution_time) and (not model.all_cells_clean()):
+        model.step()
+        time_passed = time.time() - start_time
+
+
+    if (model.all_cells_clean()):
+        print(f"Time required to clean all cells: {time_passed}")
+    else:
+        print(f"Time limited exceeded ({model.max_execution_time})")
+
+    print(f"Clean cells -> {model.percentage_cells_clean()}%")
+
+    print(f"Total movements of all agents: {model.total_movements}")
+
+    print()
